@@ -1,0 +1,85 @@
+---
+title: "Simple Regression Analysis"
+author: "Steven Chen"
+date: "Oct 31st, 2016"
+---
+
+## Abstract
+This report reproduces a simple linear regression in the book _An Introduction to Statistical Learning_ by Gareth James, Daniela Witten, Trevor Hastie, and Robert Tibshirani. The model uses the explanatary variable, TV advertising budget, to predict sales. For more information, please refer to Chapter 3.1 of the book.
+
+## Introduction
+The main goal of the analysis is to provide details about whether advertisements through different channels improve sales, and this report will look at television advertisements. We want to learn whether there is a relationship between TV advertisement budget and sales, and if there is we want to describe the relationship with a model, in this case a simple linear model.
+
+## Data
+The data set we are using, __Advertising.csv__, contains 200 data samples, each sample containing the response variable __Sales__ and the explanatary variables __TV, Radio, and Newspaper__. [Advertising.csv](http://www-bcf.usc.edu/~gareth/ISL/Advertising.csv) can be downloaded for free, and credit goes to Gareth James, Daniela Witten, Trevor Hastie and Robert Tibshirani. 
+
+Since we are mainly focused on __TV__ and __Sales__ in this paper, we have two histograms of the data distribution for the two variables.
+
+![Figure 1: Histogram of TV data](../images/histogram-tv.png)
+
+
+![Figure 2: Histogram of Sales data](../images/histogram-sales.png)
+
+
+As you can see from _Figure 1_, the distribution of the TV data is quite uniform. However, the data of the sales data is more normal.
+
+## Methodology
+We consider __Sales__ and __TV__ in our dataset and try to fit them in a simple linear regression model:
+
+$$ Sales = \beta_0 + \beta_1TV $$
+
+And to find the values for the two coefficients $\beta_0$ and $\beta_1$, we fit the linear regression model based on the normal least square criterion. $\beta_0$ represents the intercept term and $\beta_1$ represents the weight of influence that __TV__ plays in predicting the sales. Now one might ask how does the estimation of these parameters work? Since we are using the least square method, the parameters are estimated so that the sum of squares of the predicted sales and the actual sales is minimized.
+
+$$ \sum_{i=1}^n (y_i - \beta_0 - \beta_1x_i)^2 $$  
+
+
+## Results
+
+Since we are trying to find a linear model, it's extremely easy in R to achieve that and get valuable summary feedbacks. Below shows the code to read in the data set and to fit a linear model with TV being the explanatary variable and Sales being the response variable. The tables following that are the summary statistics that the linear model contains:
+
+```
+advertising = read.csv("data/Advertising.csv", header = T)
+model = lm(Sales ~ TV, data=advertising)
+summary(model)
+```
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrrr}
+  \hline
+ & Estimate & Std. Error & t value & Pr($>$$|$t$|$) \\ 
+  \hline
+(Intercept) & 7.0326 & 0.4578 & 15.36 & 0.0000 \\ 
+  TV & 0.0475 & 0.0027 & 17.67 & 0.0000 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrrr}
+  \hline
+ Quantity & Value \\ 
+  \hline
+Residual standard error: & 3.259  \\ 
+  R-squared: &  0.6119 \\
+  F-statistic: & 312.1  \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+After we fit the model, we can plot the data points in a scatter plot as well as the fitted linear model to better visualize the relationship between __TV__ and __Sales__.
+
+```
+plot(Sales~TV, data=advertising, main="Plot of TV and Sales")
+abline(model,col='red')
+```
+
+![Figure 3: Scatterplot with fitted regression line](../images/scatterplot-tv-sales.png)
+
+
+## Conclusions
+
+From Figure 3, we can see that the relationship between __TV__ and __Sales__ is quite linear, and it's also a positively correlated relationship. Since the null hypothesis is that there is no relationship between __TV__ and __Sales__, the close to zero p-value of the TV coefficient means that we can reject the null hypothesis. Based on the model, we can conclude that an increase in __TV__ advertising budget will lead to increase in __Sales__. To be more precise, an increase in $1000 in __TV__ advertising budget will lead to around 47.5 unit increase in __Sales__. 
+
+The linaer model we have here is decent, but improvements can be made by increase the number of data samples as well as adding new features into the model that could provide more insight into whether increase in advertising will indeed increase sales. 
